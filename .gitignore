@@ -1,0 +1,45 @@
+
+node_modules/
+__pycache__/
+*.pyc
+.myenv/
+
+# React / Vite / Next.js
+build/
+dist/
+out/
+.next/
+.next-env.d.ts
+.vite/
+dist-ssr/
+
+# TypeScript
+*.tsbuildinfo
+types/generated/
+
+# FastAPI / Python
+*.egg-info/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+logs/
+parts/
+sdist/
+var/
+wheels/
+*.egg
+*.log
+
+# Vim, Emacs
+*~
+*.swp
+*.swo
+.#*
+
+# Database files (if using SQLite)
+*.db
+*.sqlite3
+
+.git
