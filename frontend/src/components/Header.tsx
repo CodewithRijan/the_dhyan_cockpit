@@ -21,7 +21,7 @@ function Header({ status = 'FOCUSING' }: HeaderProps) {
 
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b border-border bg-card bg-opacity-40 backdrop-blur-sm">
+    <header className="flex items-center justify-between px-6 py-4 border-b border-border bg-card bg-opacity-40 backdrop-blur-sm font-mono">
       {/* Logo Section */}
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-8 h-8 bg-accent rounded">

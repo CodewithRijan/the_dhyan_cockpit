@@ -1,24 +1,18 @@
 'use client';
 
-import React, { useContext } from "react"
+import React, { useContext, useEffect, useInsertionEffect } from "react"
 
-import { X, Plus, Menu } from 'lucide-react';
+import { X, Plus, Menu, Trash } from 'lucide-react';
 import { useState } from 'react';
 import MenuContext from "@/context/MenuContext";
+import type { todo } from "@/types";
 
-interface Todo {
-  id: string;
-  title: string;
-  completed: boolean;
-  time: string;
-}
 
 interface EditModalProps {
   minutes: number;
   seconds: number;
-  todos: Todo[];
-  onSaveChanges: (minutes: number, seconds: number, todos: Todo[], newTaskTitle?: string) => void;
-  onAddNewTask?: (title: string) => void;
+  todos: todo[];
+  onSaveChanges: (minutes: number, seconds: number, todos: todo[], newTaskTitle?: string) => void;
 }
 
 export function EditModal({
@@ -26,13 +20,15 @@ export function EditModal({
   seconds,
   todos,
   onSaveChanges,
-  onAddNewTask,
 }: EditModalProps) {
   const [editMinutes, setEditMinutes] = useState(minutes);
   const [editSeconds, setEditSeconds] = useState(seconds);
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
+  const [localTodos, setLocalTodos] = useState<todo[]>(todos);
+
   const context = useContext(MenuContext);
+
 
   if (!context?.isModalOpen) return null;
 
@@ -41,7 +37,7 @@ export function EditModal({
   }
 
   const handleSave = () => {
-    onSaveChanges(editMinutes, editSeconds, todos, newTaskTitle);
+    onSaveChanges(editMinutes, editSeconds, localTodos);
     setNewTaskTitle('');
     onClose();
   };
@@ -57,18 +53,34 @@ export function EditModal({
   };
 
   const handleAddTask = () => {
+
+    setLocalTodos(prevTodos => {
+      return [
+        ...prevTodos,
+        {
+          id: crypto.randomUUID(),
+          description: newTaskTitle,
+          completed: false,
+        }
+      ]
+    });
+
     if (newTaskTitle.trim()) {
-      onAddNewTask?.(newTaskTitle);
       setNewTaskTitle('');
     }
-  };
+  }
+
+
+  const handleDeleteTodo = (id: string) => {
+    setLocalTodos(prevTodo => prevTodo.filter((todo) => todo.id !== id));
+  }
 
 
   const formatTime = (value: number) => String(value).padStart(2, '0');
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      className="font-mono fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div
@@ -124,19 +136,21 @@ export function EditModal({
             <span className="text-xs text-muted-foreground">{todos.length} items</span>
           </div>
           <div className="space-y-2">
-            {todos.map((todo) => (
+            {localTodos.map((todo) => (
               <div
                 key={todo.id}
-                className="bg-secondary bg-opacity-30 border border-border rounded px-4 py-3 flex items-center gap-3"
+                className="bg-secondary bg-opacity-30 border border-border rounded px-4 py-3 flex items-center gap-3 justify-between"
               >
-                <div className="w-4 h-4 rounded-full border-2 border-border flex-shrink-0" />
-                <span className="text-sm text-foreground">{todo.title}</span>
+                <span className="text-sm text-foreground">{todo.description}</span>
+
+                <button className='cursor-pointer' onClick={() => handleDeleteTodo(todo.id)}>
+                  <Trash color='red' />
+                </button>
               </div>
             ))}
 
             {/* Add New Task Input */}
             <div className="bg-secondary bg-opacity-30 border border-border rounded px-4 py-3 flex items-center gap-3">
-              <div className="w-4 h-4 rounded-full border-2 border-border flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Add a new task..."
@@ -152,7 +166,7 @@ export function EditModal({
               {newTaskTitle.trim() && (
                 <button
                   onClick={handleAddTask}
-                  className="text-accent hover:text-orange-600 transition-colors flex-shrink-0"
+                  className="text-accent hover:text-orange-600 transition-colors shrink-0"
                   aria-label="Add task"
                 >
                   <Plus className="w-4 h-4" />
