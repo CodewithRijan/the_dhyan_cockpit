@@ -7,30 +7,9 @@ import { Todos, type Todo } from '@/components/Todos';
 import { EditModal } from '@/components/EditModal';
 
 import { type timer, type todo } from '@/types';
-import TimerReducer from '@/reducer/TimerReducer';
 import DefaultTimerContext from '@/context/DefaultTimerContext';
+import { toast } from 'sonner';
 
-
-const MOCK_TODOS: Todo[] = [
-  {
-    id: '1',
-    title: 'Design dashboard system architecture',
-    time: '18:00',
-    completed: false,
-  },
-  {
-    id: '2',
-    title: 'Review PR for background animations',
-    time: '11:30',
-    completed: false,
-  },
-  {
-    id: '3',
-    title: 'Coffee break & stretch',
-    time: '08:45',
-    completed: true,
-  },
-];
 
 export default function Home() {
 
@@ -49,6 +28,8 @@ export default function Home() {
     })
     console.log("The default timer context state has been updated successfully!");
     console.log(`The new data was minutes: ${newMinutes} , seconds: ${newSeconds} and updatedsTodos: ${updatedTodos}`);
+
+    toast.success("New timer information was saved successfully!", { position: "top-right" });
   };
 
   useEffect(() => {
