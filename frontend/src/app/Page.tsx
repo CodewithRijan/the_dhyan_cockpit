@@ -73,12 +73,9 @@ export default function Home() {
 
   }
 
-
   return (
     <>
-      {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center gap-16 px-4 py-16">
-        {/* Timer Section */}
         <Timer
           timer={{
             minutes: defaultTimer.minutes,
